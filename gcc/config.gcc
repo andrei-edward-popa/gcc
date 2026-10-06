@@ -3558,6 +3558,12 @@ sparc64-*-openbsd*)
 	with_cpu=ultrasparc
 	tmake_file="${tmake_file} sparc/t-sparc"
 	;;
+stm8-*-elf*)
+	tm_file="elfos.h newlib-stdint.h ${tm_file}"
+	tmake_file="${tmake_file} stm8/t-stm8"
+	target_has_targetm_common=no
+	gcc_cv_initfini_array=yes
+	;;
 tic6x-*-elf)
 	tm_file="elfos.h ${tm_file} c6x/elf-common.h c6x/elf.h"
 	tm_file="${tm_file} tm-dwarf2.h newlib-stdint.h"

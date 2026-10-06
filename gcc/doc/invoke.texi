@@ -1490,6 +1490,9 @@ See RS/6000 and PowerPC Options.
 -mcbcond  -mfmaf  -mfsmuld  -mpopc  -msubxc
 -mfix-at697f  -mfix-ut699  -mfix-ut700  -mfix-gr712rc}
 
+@emph{STM8 Options} (@ref{STM8 Options})
+@gccoptlist{-mmodel=@var{model}}
+
 @emph{System V Options} (@ref{System V Options})
 @gccoptlist{-YP,@var{paths}  -Ym,@var{dir}}
 
@@ -21438,6 +21441,7 @@ other compilers on the same platform.
 * SH Options::
 * Solaris 2 Options::
 * SPARC Options::
+* STM8 Options::
 * System V Options::
 * V850 Options::
 * VAX Options::
@@ -34666,6 +34670,27 @@ With @option{-mstack-bias}, GCC assumes that the stack pointer, and
 frame pointer if present, are offset by @minus{}2047 which must be added back
 when making stack frame references.  This is the default in 64-bit mode.
 Otherwise, assume no such offset is present.
+@end table
+
+@node STM8 Options
+@subsection STM8 Options
+@cindex STM8 Options
+
+These options are defined for STM8 ELF targets.
+
+@table @gcctabopt
+@item -mmodel=@var{model}
+@opindex mmodel
+Select the SDCC-compatible code memory model.  The supported values are
+@code{medium} and @code{large}; the default is @code{medium}.
+
+The medium model uses 16-bit function pointers and near call and return
+instructions.  The large model uses 24-bit function pointers and far call
+and return instructions, allowing code to span multiple 64-KiB banks.
+Object pointers remain 16 bits in both models.
+
+Compile and link all objects and runtime libraries using the same model.
+The linker rejects objects that use different models.
 @end table
 
 @node System V Options
