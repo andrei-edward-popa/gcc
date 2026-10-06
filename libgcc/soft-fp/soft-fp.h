@@ -316,6 +316,11 @@
 #include "op-8.h"
 #include "op-common.h"
 
+/* Targets with narrower int may select a wider IEEE bitfield container.  */
+#ifndef _FP_BITFIELD_TYPE
+#define _FP_BITFIELD_TYPE unsigned int
+#endif
+
 /* Sigh.  Silly things longlong.h needs.  */
 #define UWtype		_FP_W_TYPE
 #define W_TYPE_SIZE	_FP_W_TYPE_SIZE

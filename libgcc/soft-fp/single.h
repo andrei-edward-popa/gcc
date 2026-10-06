@@ -70,13 +70,13 @@ union _FP_UNION_S
   struct _FP_STRUCT_LAYOUT
   {
 #if __BYTE_ORDER == __BIG_ENDIAN
-    unsigned sign : 1;
-    unsigned exp  : _FP_EXPBITS_S;
-    unsigned frac : _FP_FRACBITS_S - (_FP_IMPLBIT_S != 0);
+    _FP_BITFIELD_TYPE sign : 1;
+    _FP_BITFIELD_TYPE exp : _FP_EXPBITS_S;
+    _FP_BITFIELD_TYPE frac : _FP_FRACBITS_S - (_FP_IMPLBIT_S != 0);
 #else
-    unsigned frac : _FP_FRACBITS_S - (_FP_IMPLBIT_S != 0);
-    unsigned exp  : _FP_EXPBITS_S;
-    unsigned sign : 1;
+    _FP_BITFIELD_TYPE frac : _FP_FRACBITS_S - (_FP_IMPLBIT_S != 0);
+    _FP_BITFIELD_TYPE exp : _FP_EXPBITS_S;
+    _FP_BITFIELD_TYPE sign : 1;
 #endif
   } bits;
 };
