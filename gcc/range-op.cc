@@ -5255,6 +5255,27 @@ namespace selftest
 static void
 range_op_cast_tests ()
 {
+  /* Object and function pointers can have different widths.  Truncating
+     a nonzero pointer may produce null; widening must zero-extend both
+     the bounds and the known-bit mask.  */
+  tree ptr16 = build_pointer_type_for_mode (void_type_node, HImode, true);
+  tree ptr32 = build_pointer_type_for_mode (void_type_node, SImode, true);
+  prange source, result, unused;
+  range_op_handler ptr_cast (CONVERT_EXPR);
+  unused.set_varying (ptr16);
+  source.set (ptr32, wi::uhwi (0x123456, 32), wi::uhwi (0x123456, 32));
+  ASSERT_TRUE (ptr_cast.fold_range (result, ptr16, source, unused));
+  ASSERT_TRUE (result.lower_bound () == wi::uhwi (0x3456, 16));
+  ASSERT_TRUE (result.upper_bound () == wi::uhwi (0x3456, 16));
+  source.set (ptr32, wi::uhwi (0x10000, 32), wi::uhwi (0x10000, 32));
+  ASSERT_TRUE (ptr_cast.fold_range (result, ptr16, source, unused));
+  ASSERT_TRUE (result.zero_p ());
+  unused.set_varying (ptr32);
+  source.set (ptr16, wi::uhwi (0xabcd, 16), wi::uhwi (0xabcd, 16));
+  ASSERT_TRUE (ptr_cast.fold_range (result, ptr32, source, unused));
+  ASSERT_TRUE (result.lower_bound () == wi::uhwi (0xabcd, 32));
+  ASSERT_TRUE (result.upper_bound () == wi::uhwi (0xabcd, 32));
+
   int_range<2> r0, r1, r2, rold;
   r0.set_varying (integer_type_node);
   wide_int maxint = r0.upper_bound ();
