@@ -11,7 +11,8 @@ struct type
 } t;
 
 unsigned int 
-foo ()
+/* Match the actual call's arity, including on callee-pop ABIs.  */
+foo (struct type unused)
 {
   return t.p;
 }

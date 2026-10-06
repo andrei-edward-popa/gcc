@@ -1,4 +1,7 @@
 /* { dg-additional-options "-std=gnu17" } */
+/* The unprototyped h call promotes int16_t to int; its definition takes
+   uint32_t.  These argument types are incompatible with a 16-bit int.  */
+/* { dg-require-effective-target int32 } */
 
 #include <stdio.h>
 #include <stdint.h>
