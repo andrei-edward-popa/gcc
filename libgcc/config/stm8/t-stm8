@@ -1,0 +1,72 @@
+# Build each integer entry point separately so unused helpers do not
+# depend on linker garbage collection to stay out of an executable.
+LIB1ASMSRC = stm8/stm8-arith.S
+LIB1ASMFUNCS = _mulhi3 _divhi3 _modhi3 _udivhi3 _umodhi3 \
+	_mulsi3 _divsi3 _modsi3 _udivsi3 _umodsi3 _stm8_udivmodsi4
+
+stm8_int_funcs = _divqi3 _modqi3 \
+	_stm8_muldi3 _stm8_udivmoddi4 _stm8_divmoddi4
+stm8_int_objs := $(addsuffix $(objext),$(stm8_int_funcs))
+libgcc-objects += $(stm8_int_objs)
+
+$(stm8_int_objs): %$(objext): $(srcdir)/config/stm8/stm8-int-runtime.c \
+	$(srcdir)/config/stm8/stm8-runtime.h
+	$(gcc_compile) -DFINE_GRAINED_LIBRARIES -DL$* -c $< $(vis_hide)
+
+LIB2ADD += $(srcdir)/config/stm8/stm8-far-call.S
+CFLAGS-stm8-int-runtime.c += -Os -ffreestanding -fno-builtin \
+	-ffunction-sections -g0
+HOST_LIBGCC2_CFLAGS += -g0 -Os
+
+# Wide C results use a hidden pointer.  The backend emits pointer-result
+# calls for DI multiply/divide instead of the generic implementations.
+LIB2FUNCS_EXCLUDE += \
+	_muldi3 _negdi2 _ashldi3 _ashrdi3 _lshrdi3 \
+	_divdi3 _moddi3 _divmoddi4 \
+	_udivdi3 _umoddi3 _udivmoddi4
+
+# Target integer and bit helpers use native STM8 int return locations.
+# Unwinding, trapping arithmetic and unsupported float modes remain separate.
+LIB2FUNCS_ST =
+LIB2ADDEH =
+LIB2ADDEHSTATIC =
+LIB2ADDEHSHARED =
+LIB2FUNCS_EXCLUDE += \
+	_cmpdi2 _ucmpdi2 _clear_cache _trampoline __main \
+	_absvsi2 _absvdi2 _addvsi3 _addvdi3 _subvsi3 _subvdi3 \
+	_mulvsi3 _mulvdi3 _negvsi2 _negvdi2 _ctors \
+	_ffssi2 _ffsdi2 _clz _clzsi2 _clzdi2 _ctzsi2 _ctzdi2 \
+	_popcount_tab _popcountsi2 _popcountdi2 _paritysi2 _paritydi2 \
+	_powixf2 _powitf2 \
+	_mulhc3 _muldc3 _mulxc3 _multc3 \
+	_divhc3 _divdc3 _divxc3 _divtc3 \
+	_clrsbsi2 _clrsbdi2 _mulbitint3 \
+	_udiv_w_sdiv _divmodbitint4 \
+	$(foreach m,si di ti,$(foreach f,sf df xf tf,\
+	_fix$(f)$(m) _fixuns$(f)$(m) _float$(m)$(f) _floatun$(m)$(f)))
+
+# IEEE binary32/binary64 use upstream soft-fp; native C double is SF.
+softfp_float_modes := sf df
+softfp_int_modes := si di
+softfp_extensions := sfdf
+softfp_truncations := dfsf
+softfp_cflags := -Os -ffunction-sections -fno-builtin -g0
+# Use the compact one-word fraction representation for every function
+# involving binary64, including conversions between SF and DF.
+$(foreach f,$(wildcard $(srcdir)/soft-fp/*df*.c),\
+  $(eval CFLAGS-$(notdir $(f)) += -DSTM8_SOFTFP_WORD64))
+
+# Outlined byte fractions keep SF arithmetic and DF addition in near flash.
+LIB2ADD += $(srcdir)/config/stm8/stm8-fp-add.c
+CFLAGS-stm8-fp-add.c += -Os -fno-builtin -ffunction-sections -g0
+
+# Bit helpers also need separate archive members when --gc-sections is off.
+stm8_bit_funcs = $(foreach m,qi hi psi si di,\
+	$(foreach f,clz ctz ffs popcount parity clrsb,_$(f)$(m)2))
+stm8_bit_objs := $(addsuffix $(objext),$(stm8_bit_funcs))
+libgcc-objects += $(stm8_bit_objs)
+
+$(stm8_bit_objs): %$(objext): $(srcdir)/config/stm8/stm8-bit-runtime.c \
+	$(srcdir)/config/stm8/stm8-runtime.h
+	$(gcc_compile) -DFINE_GRAINED_LIBRARIES -DL$* -ffreestanding \
+	  -fno-builtin -ffunction-sections -c $< $(vis_hide)

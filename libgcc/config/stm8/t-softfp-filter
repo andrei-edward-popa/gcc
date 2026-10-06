@@ -1,0 +1,3 @@
+# The remaining operations and conversions come from upstream soft-fp.
+LIB2ADD := $(filter-out %/addsf3.c %/subsf3.c %/mulsf3.c \
+	%/divsf3.c %/adddf3.c %/subdf3.c,$(LIB2ADD))
