@@ -571,6 +571,17 @@ operator_cast::fold_range (prange &r, tree type,
   if (empty_range_varying (r, type, inner, outer))
     return true;
 
+  /* Targets may use different widths for object and function pointers.
+     Convert their numeric ranges as unsigned integers; a narrowing cast
+     can wrap, so copying the original bounds and bitmask is incorrect.  */
+  if (TYPE_PRECISION (type) != TYPE_PRECISION (inner.type ()))
+    {
+      tree uint_type = make_unsigned_type (TYPE_PRECISION (inner.type ()));
+      int_range<2> tmp (uint_type, inner.lower_bound (), inner.upper_bound ());
+      tmp.update_bitmask (inner.get_bitmask ());
+      return fold_range (r, type, tmp, outer, relation_trio ());
+    }
+
   r.set (type, inner.lower_bound (), inner.upper_bound ());
 
   // The resulting pointer still points to the same object.
