@@ -2960,10 +2960,9 @@ allocno_spill_priority_compare (ira_allocno_t a1, ira_allocno_t a2)
 
   /* Avoid spilling static chain pointer pseudo when non-local goto is
      used.  */
-  if (non_spilled_static_chain_regno_p (ALLOCNO_REGNO (a1)))
-    return 1;
-  else if (non_spilled_static_chain_regno_p (ALLOCNO_REGNO (a2)))
-    return -1;
+  if ((diff = (non_spilled_static_chain_regno_p (ALLOCNO_REGNO (a1))
+	       - non_spilled_static_chain_regno_p (ALLOCNO_REGNO (a2)))) != 0)
+    return diff;
   if (ALLOCNO_BAD_SPILL_P (a1) && ! ALLOCNO_BAD_SPILL_P (a2))
     return 1;
   if (ALLOCNO_BAD_SPILL_P (a2) && ! ALLOCNO_BAD_SPILL_P (a1))
