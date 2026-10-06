@@ -1439,6 +1439,10 @@ sparc-*-netbsdelf*)
 	;;
 sparc64-*-openbsd*)
 	;;
+stm8-*-elf*)
+	tmake_file="$tmake_file stm8/t-stm8 t-softfp stm8/t-softfp-filter"
+	sfp_machine_header=stm8/sfp-machine.h
+	;;
 sparc-*-elf*)
 	case ${host} in
 	*-leon[3-9]*)
