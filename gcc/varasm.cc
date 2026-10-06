@@ -1664,7 +1664,9 @@ make_decl_rtl (tree decl)
       if (TREE_TYPE (decl) != error_mark_node)
 	{
 	  addr_space_t as = TYPE_ADDR_SPACE (TREE_TYPE (decl));
-	  address_mode = targetm.addr_space.address_mode (as);
+	  address_mode = (TREE_CODE (decl) == FUNCTION_DECL
+			  ? targetm.calls.function_address_mode ()
+			  : targetm.addr_space.address_mode (as));
 	}
       x = gen_rtx_SYMBOL_REF (address_mode, name);
     }
@@ -1890,9 +1892,12 @@ assemble_asm (tree asm_str)
 void
 assemble_addr_to_section (rtx symbol, section *sec)
 {
+  scalar_int_mode mode = targetm.calls.function_pointer_mode ();
+  unsigned int align = (mode == ptr_mode ? POINTER_SIZE
+			: MIN (GET_MODE_ALIGNMENT (mode), BIGGEST_ALIGNMENT));
   switch_to_section (sec);
-  assemble_align (POINTER_SIZE);
-  assemble_integer (symbol, POINTER_SIZE_UNITS, POINTER_SIZE, 1);
+  assemble_align (align);
+  assemble_integer (symbol, GET_MODE_SIZE (mode), align, 1);
 }
 
 /* Return the numbered .ctors.N (if CONSTRUCTOR_P) or .dtors.N (if

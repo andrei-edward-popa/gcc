@@ -9453,8 +9453,17 @@ expand_expr_addr_expr (tree exp, rtx target, machine_mode tmode,
   if (POINTER_TYPE_P (TREE_TYPE (exp)))
     {
       as = TYPE_ADDR_SPACE (TREE_TYPE (TREE_TYPE (exp)));
-      address_mode = targetm.addr_space.address_mode (as);
-      pointer_mode = targetm.addr_space.pointer_mode (as);
+      if (as == ADDR_SPACE_GENERIC
+	  && FUNC_OR_METHOD_TYPE_P (TREE_TYPE (TREE_TYPE (exp))))
+	{
+	  address_mode = targetm.calls.function_address_mode ();
+	  pointer_mode = targetm.calls.function_pointer_mode ();
+	}
+      else
+	{
+	  address_mode = targetm.addr_space.address_mode (as);
+	  pointer_mode = targetm.addr_space.pointer_mode (as);
+	}
     }
 
   /* We can get called with some Weird Things if the user does silliness
@@ -9474,7 +9483,19 @@ expand_expr_addr_expr (tree exp, rtx target, machine_mode tmode,
   if (rmode == VOIDmode)
     rmode = new_tmode;
   if (rmode != new_tmode)
-    result = convert_memory_address_addr_space (new_tmode, result, as);
+    {
+      /* A cast from a function address to an object pointer may narrow
+	 its representation.  Keep the symbolic relocation available to
+	 the target rather than applying object-address mode assertions.  */
+      if (GET_CODE (result) == SYMBOL_REF
+	  && FUNC_OR_METHOD_TYPE_P (TREE_TYPE (TREE_OPERAND (exp, 0))))
+	{
+	  result = shallow_copy_rtx (result);
+	  PUT_MODE (result, new_tmode);
+	}
+      else
+	result = convert_memory_address_addr_space (new_tmode, result, as);
+    }
 
   return result;
 }

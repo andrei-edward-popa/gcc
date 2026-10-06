@@ -479,7 +479,11 @@ c_build_pointer_type (tree to_type)
   machine_mode pointer_mode;
 
   if (as != ADDR_SPACE_GENERIC || c_default_pointer_mode == VOIDmode)
-    pointer_mode = targetm.addr_space.pointer_mode (as);
+    pointer_mode = (as == ADDR_SPACE_GENERIC
+		    && to_type != error_mark_node
+		    && FUNC_OR_METHOD_TYPE_P (to_type)
+		    ? targetm.calls.function_pointer_mode ()
+		    : targetm.addr_space.pointer_mode (as));
   else
     pointer_mode = c_default_pointer_mode;
 

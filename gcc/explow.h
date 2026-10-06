@@ -136,6 +136,7 @@ extern rtx hard_function_value (const_tree, const_tree, const_tree, int);
    to a specific named address space, by emitting insns to perform arithmetic
    if necessary.  */
 extern rtx memory_address_addr_space (machine_mode, rtx, addr_space_t);
+extern rtx function_address (rtx);
 
 extern rtx eliminate_constant_term (rtx, rtx *);
 

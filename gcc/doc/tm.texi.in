@@ -3336,6 +3336,10 @@ stack in its natural location.
 
 @hook TARGET_RETURN_POPS_ARGS
 
+@hook TARGET_FUNCTION_POINTER_MODE
+
+@hook TARGET_FUNCTION_ADDRESS_MODE
+
 @defmac CALL_POPS_ARGS (@var{cum})
 A C expression that should indicate the number of bytes a call sequence
 pops off the stack.  It is added to the value of @code{RETURN_POPS_ARGS}
