@@ -1,4 +1,6 @@
 /* PR rtl-optimization/41239 */
+/* STM8 has only two independently allocatable 16-bit index registers.  */
+/* { dg-skip-if "asm requires three word registers" { stm8-*-* } } */
 
 struct S
 {

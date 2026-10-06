@@ -23,6 +23,9 @@
 #elif defined (__RL78__)
   /* On RL78 division by zero does not trap.  */
 # define DO_TEST 0
+#elif defined (__STM8__)
+  /* STM8 integer division does not raise SIGFPE.  */
+# define DO_TEST 0
 #elif defined (__RX__)
   /* On RX division by zero does not trap.  */
 # define DO_TEST 0
