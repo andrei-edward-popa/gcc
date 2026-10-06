@@ -4256,6 +4256,18 @@ nothing (the caller pops all).  When this convention is in use,
 number of arguments.
 @end deftypefn
 
+@deftypefn {Target Hook} scalar_int_mode TARGET_FUNCTION_POINTER_MODE (void)
+Return the storage mode of a pointer to a function in the generic address
+space.  This may differ from the mode of an object pointer.  The default
+implementation returns @code{ptr_mode}.
+@end deftypefn
+
+@deftypefn {Target Hook} scalar_int_mode TARGET_FUNCTION_ADDRESS_MODE (void)
+Return the mode used for executable function addresses in RTL.  This
+may differ from @code{Pmode}, which describes object addresses.  The
+default implementation returns @code{Pmode}.
+@end deftypefn
+
 @defmac CALL_POPS_ARGS (@var{cum})
 A C expression that should indicate the number of bytes a call sequence
 pops off the stack.  It is added to the value of @code{RETURN_POPS_ARGS}

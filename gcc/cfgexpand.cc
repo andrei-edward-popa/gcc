@@ -4683,8 +4683,8 @@ round_udiv_adjust (machine_mode mode, rtx mod, rtx op1)
      const1_rtx, const0_rtx);
 }
 
-/* Convert X to MODE, that must be Pmode or ptr_mode, without emitting
-   any rtl.  */
+/* Convert X to an address mode without emitting any RTL.  Function
+   addresses can use a different mode from data addresses.  */
 
 static rtx
 convert_debug_memory_address (scalar_int_mode mode, rtx x,
@@ -4692,7 +4692,8 @@ convert_debug_memory_address (scalar_int_mode mode, rtx x,
 {
 #ifndef POINTERS_EXTEND_UNSIGNED
   gcc_assert (mode == Pmode
-	      || mode == targetm.addr_space.address_mode (as));
+	      || mode == targetm.addr_space.address_mode (as)
+	      || mode == targetm.calls.function_address_mode ());
   gcc_assert (GET_MODE (x) == mode || GET_MODE (x) == VOIDmode);
 #else
   rtx temp;

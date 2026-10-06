@@ -291,21 +291,25 @@ prepare_call_address (tree fndecl_or_type, rtx funexp, rtx static_chain_value,
 	 function address into a register now.  */
       funexp = ((reg_parm_seen
 		 && targetm.small_register_classes_for_mode_p (FUNCTION_MODE))
-		 ? force_not_mem (memory_address (FUNCTION_MODE, funexp))
-		 : memory_address (FUNCTION_MODE, funexp));
+	 ? force_not_mem (function_address (funexp))
+	 : function_address (funexp));
     }
   else
     {
       /* funexp could be a SYMBOL_REF represents a function pointer which is
 	 of ptr_mode.  In this case, it should be converted into address mode
 	 to be a valid address for memory rtx pattern.  See PR 64971.  */
-      if (GET_MODE (funexp) != Pmode)
-	funexp = convert_memory_address (Pmode, funexp);
+      scalar_int_mode address_mode = targetm.calls.function_address_mode ();
+      if (GET_MODE (funexp) != address_mode)
+	{
+	  funexp = shallow_copy_rtx (funexp);
+	  PUT_MODE (funexp, address_mode);
+	}
 
       if (!(flags & ECF_SIBCALL))
 	{
 	  if (!NO_FUNCTION_CSE && optimize && ! flag_no_function_cse)
-	    funexp = force_reg (Pmode, funexp);
+	    funexp = force_reg (address_mode, funexp);
 	}
     }
 
@@ -403,7 +407,7 @@ emit_call_1 (rtx funexp, tree fntree ATTRIBUTE_UNUSED, tree fndecl ATTRIBUTE_UNU
      and we don't want to load it into a register as an optimization,
      because prepare_call_address already did it if it should be done.  */
   if (GET_CODE (funexp) != SYMBOL_REF)
-    funexp = memory_address (FUNCTION_MODE, funexp);
+    funexp = function_address (funexp);
 
   funmem = gen_rtx_MEM (FUNCTION_MODE, funexp);
   if (fndecl && TREE_CODE (fndecl) == FUNCTION_DECL)

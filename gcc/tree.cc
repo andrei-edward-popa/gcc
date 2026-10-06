@@ -7235,7 +7235,9 @@ build_pointer_type_for_mode (tree to_type, machine_mode mode,
   if (mode == VOIDmode)
     {
       addr_space_t as = TYPE_ADDR_SPACE (to_type);
-      mode = targetm.addr_space.pointer_mode (as);
+      mode = (as == ADDR_SPACE_GENERIC && FUNC_OR_METHOD_TYPE_P (to_type)
+	      ? targetm.calls.function_pointer_mode ()
+	      : targetm.addr_space.pointer_mode (as));
     }
 
   /* If the pointed-to type has the may_alias attribute set, force
@@ -7307,7 +7309,9 @@ build_reference_type_for_mode (tree to_type, machine_mode mode,
   if (mode == VOIDmode)
     {
       addr_space_t as = TYPE_ADDR_SPACE (to_type);
-      mode = targetm.addr_space.pointer_mode (as);
+      mode = (as == ADDR_SPACE_GENERIC && FUNC_OR_METHOD_TYPE_P (to_type)
+	      ? targetm.calls.function_pointer_mode ()
+	      : targetm.addr_space.pointer_mode (as));
     }
 
   /* If the pointed-to type has the may_alias attribute set, force

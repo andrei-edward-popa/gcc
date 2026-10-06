@@ -203,6 +203,8 @@ extern bool default_target_can_inline_p (tree, tree);
 extern bool default_update_ipa_fn_target_info (unsigned int &, const gimple *);
 extern bool default_need_ipa_fn_target_info (const_tree, unsigned int &);
 extern bool default_valid_pointer_mode (scalar_int_mode);
+extern scalar_int_mode default_function_pointer_mode (void);
+extern scalar_int_mode default_function_address_mode (void);
 extern bool default_ref_may_alias_errno (class ao_ref *);
 extern scalar_int_mode default_addr_space_pointer_mode (addr_space_t);
 extern scalar_int_mode default_addr_space_address_mode (addr_space_t);

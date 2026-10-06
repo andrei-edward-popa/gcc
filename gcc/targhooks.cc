@@ -1671,6 +1671,18 @@ default_vectorize_create_costs (vec_info *vinfo, bool costing_for_scalar)
 
 /* Determine whether or not a pointer mode is valid. Assume defaults
    of ptr_mode or Pmode - can be overridden.  */
+scalar_int_mode
+default_function_pointer_mode (void)
+{
+  return ptr_mode;
+}
+
+scalar_int_mode
+default_function_address_mode (void)
+{
+  return Pmode;
+}
+
 bool
 default_valid_pointer_mode (scalar_int_mode mode)
 {

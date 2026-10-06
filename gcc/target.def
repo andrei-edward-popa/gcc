@@ -4906,6 +4906,22 @@ DEFHOOK
 HOOK_VECTOR (TARGET_CALLS, calls)
 
 DEFHOOK
+(function_pointer_mode,
+ "Return the storage mode of a pointer to a function in the generic address\n\
+space.  This may differ from the mode of an object pointer.  The default\n\
+implementation returns @code{ptr_mode}.",
+ scalar_int_mode, (void),
+ default_function_pointer_mode)
+
+DEFHOOK
+(function_address_mode,
+ "Return the mode used for executable function addresses in RTL.  This\n\
+may differ from @code{Pmode}, which describes object addresses.  The\n\
+default implementation returns @code{Pmode}.",
+ scalar_int_mode, (void),
+ default_function_address_mode)
+
+DEFHOOK
 (promote_function_mode,
  "Like @code{PROMOTE_MODE}, but it is applied to outgoing function arguments or\n\
 function return values.  The target hook should return the new mode\n\
@@ -7739,4 +7755,3 @@ The default value is NULL.",
 
 /* Close the 'struct gcc_target' definition.  */
 HOOK_VECTOR_END (C90_EMPTY_HACK)
-

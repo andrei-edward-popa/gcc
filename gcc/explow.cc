@@ -434,11 +434,11 @@ convert_memory_address_addr_space (scalar_int_mode to_mode, rtx x,
    of mode MODE in the named address space AS.  When X is not itself valid,
    this works by copying X or subexpressions of it into registers.  */
 
-rtx
-memory_address_addr_space (machine_mode mode, rtx x, addr_space_t as)
+static rtx
+memory_address_addr_space_1 (machine_mode mode, rtx x, addr_space_t as,
+			    scalar_int_mode address_mode)
 {
   rtx oldx = x;
-  scalar_int_mode address_mode = targetm.addr_space.address_mode (as);
 
   x = convert_memory_address_addr_space (address_mode, x, as);
 
@@ -538,6 +538,34 @@ memory_address_addr_space (machine_mode mode, rtx x, addr_space_t as)
   update_temp_slot_address (oldx, x);
 
   return x;
+}
+
+rtx
+memory_address_addr_space (machine_mode mode, rtx x, addr_space_t as)
+{
+  return memory_address_addr_space_1 (mode, x, as,
+				      targetm.addr_space.address_mode (as));
+}
+
+/* Code addresses need not have the mode of an object address.  In
+   particular, preserve symbolic addresses while changing their mode;
+   extending an already truncated integer would lose the relocation.  */
+rtx
+function_address (rtx x)
+{
+  scalar_int_mode mode = targetm.calls.function_address_mode ();
+  if (GET_MODE (x) != mode && GET_MODE (x) != VOIDmode)
+    {
+      if (GET_CODE (x) == SYMBOL_REF)
+	{
+	  x = shallow_copy_rtx (x);
+	  PUT_MODE (x, mode);
+	}
+      else
+	x = convert_modes (mode, GET_MODE (x), x, 1);
+    }
+  return memory_address_addr_space_1 (FUNCTION_MODE, x, ADDR_SPACE_GENERIC,
+				    mode);
 }
 
 /* Convert a mem ref into one with a valid memory address.
