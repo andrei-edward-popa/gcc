@@ -1262,6 +1262,7 @@ case $cpu-$vendor in
 			| sparclite \
 			| sparcv8 | sparcv9 | sparcv9b | sparcv9v | sv1 | sx* \
 			| spu \
+			| stm8 \
 			| tahoe \
 			| thumbv7* \
 			| tic30 | tic4x | tic54x | tic55x | tic6x | tic80 \
