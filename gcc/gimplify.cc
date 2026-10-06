@@ -21997,6 +21997,17 @@ build_instrumentation_call (gimple_seq *seq, enum built_in_function fncode,
   gimple_call_set_lhs (call, tmp_var);
   gimplify_seq_add_stmt (seq, call);
   x = builtin_decl_implicit (fncode);
+  /* The hooks take void *, whose representation can differ from that
+     of the function pointer.  Honor the declared parameter ABI.  */
+  this_fn_addr = fold_convert (ptr_type_node, this_fn_addr);
+  if (!is_gimple_val (this_fn_addr))
+    {
+      /* Instrumentation is added after the gimplification context has
+	 been popped.  Build this conversion directly in GIMPLE.  */
+      tree fn_addr = create_tmp_var (ptr_type_node, "function_addr");
+      gimplify_seq_add_stmt (seq, gimple_build_assign (fn_addr, this_fn_addr));
+      this_fn_addr = fn_addr;
+    }
   call = gimple_build_call (x, 2, this_fn_addr, tmp_var);
   gimplify_seq_add_stmt (seq, call);
 
