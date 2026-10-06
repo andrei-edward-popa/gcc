@@ -1,4 +1,5 @@
 /* { dg-do assemble } */
+/* { dg-skip-if "two 32-bit outputs need eight register bytes" { stm8-*-* } } */
 
 static inline unsigned long rdfpcr(void)
 {

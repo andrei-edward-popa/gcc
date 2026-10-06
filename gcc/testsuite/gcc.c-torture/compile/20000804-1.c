@@ -1,6 +1,7 @@
 /* This does not work on h8300 due to the use of an asm
    statement to force a 'long long' (64-bits) to go in a register.  */
 /* { dg-do assemble } */
+/* { dg-skip-if "no 128-bit register group" { stm8-*-* } } */
 /* { dg-skip-if "" { { i?86-*-* x86_64-*-* } && { ia32 && { ! nonpic } } } } */
 /* { dg-skip-if "Not enough 64-bit registers" { pdp11-*-* } { "-O0" } { "" } } */
 /* { dg-xfail-if "Inconsistent constraint on asm" { csky-*-* } { "-O0" } { "" } } */

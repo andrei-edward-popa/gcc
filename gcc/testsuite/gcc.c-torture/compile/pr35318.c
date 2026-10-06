@@ -1,3 +1,4 @@
+/* { dg-skip-if "two floating-point register outputs" { stm8-*-* } } */
 /* { dg-skip-if "" { pdp11-*-* } } */
 /* PR target/35318 */
 

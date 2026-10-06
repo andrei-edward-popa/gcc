@@ -1,3 +1,4 @@
+/* { dg-skip-if "four word registers required" { stm8-*-* } } */
 /* { dg-skip-if "not enough registers" { pdp11-*-* } } */
 /* { dg-skip-if "too many arguments in function call" { bpf-*-* } } */
 

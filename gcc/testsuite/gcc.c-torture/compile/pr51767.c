@@ -1,3 +1,4 @@
+/* { dg-skip-if "pointer and long need six register bytes" { stm8-*-* } } */
 /* PR rtl-optimization/51767 */
 
 extern void fn1 (void), fn2 (void);

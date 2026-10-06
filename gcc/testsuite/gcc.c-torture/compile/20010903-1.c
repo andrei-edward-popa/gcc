@@ -1,3 +1,4 @@
+/* { dg-skip-if "three address registers at O0" { stm8-*-* } { "-O0" } } */
 struct A {
   long a;
 };

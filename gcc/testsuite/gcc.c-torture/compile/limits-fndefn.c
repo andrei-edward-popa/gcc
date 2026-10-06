@@ -1,3 +1,4 @@
+/* { dg-skip-if "argument list exceeds the near address space" { stm8-*-* } } */
 /* { dg-skip-if "too complex for avr" { avr-*-* } } */
 /* { dg-skip-if "no chance for bpf" { bpf-*-* } } */
 /* { dg-additional-options -Wa,--no-verify { target { nvptx-*-* && { ! __OPTIMIZE__ } } } }

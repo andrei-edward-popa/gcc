@@ -1,3 +1,4 @@
+/* { dg-skip-if "literal exceeds the near address space" { stm8-*-* } } */
 /* { dg-skip-if "Array too big" { avr-*-* pdp11-*-* msp430-*-* } } */ 
 
 #define STR2 "012345678901234567890123456789012345678901234567890123456789\

@@ -1,5 +1,6 @@
 /* This test should be switched off for a new target with less than 4 allocatable registers */
 /* { dg-do compile { target asm_goto_with_outputs } } */
+/* { dg-skip-if "four word registers required" { stm8-*-* } } */
 int
 foo (void)
 {
