@@ -31,7 +31,7 @@ random_bitstring ()
 	{
 	  x <<= n_bits;
 	  if (ran & 1)
-	    x |= (1 << n_bits) - 1;
+	    x |= (1ULL << n_bits) - 1;
 
 	  if (tot_bits > 8 * sizeof (long long) + 6)
 	    return x;

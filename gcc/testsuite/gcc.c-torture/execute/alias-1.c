@@ -1,3 +1,5 @@
+/* The float store requires a four-byte int object.  */
+/* { dg-require-effective-target int32 } */
 int val;
 
 int *ptr = &val;
@@ -18,4 +20,3 @@ main(void)
   if (*ptr)
     __builtin_abort ();
 }
-
